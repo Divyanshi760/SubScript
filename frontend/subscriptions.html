@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Subscriptions - SubScript</title>
+    <link rel="stylesheet" href="./static/styles.css" />
+  </head>
+  <body data-page="subscriptions">
+    <div class="layout">
+      <aside class="sidebar">
+        <h2>SubScript</h2>
+        <nav id="sidebar-nav" class="nav"></nav>
+        <div class="card" style="margin-top: 14px;">
+          <p id="user-name" style="margin: 0; font-weight: 700;"></p>
+          <p id="user-email" class="muted" style="margin: 6px 0 0;"></p>
+          <button id="logout-btn" class="btn btn-ghost" style="margin-top: 10px; width: 100%;">Logout</button>
+        </div>
+      </aside>
+
+      <main class="main">
+        <div class="topbar">
+          <h1 id="top-title" style="margin: 0; font-size: 1.6rem;"></h1>
+        </div>
+
+        <section class="card">
+          <h3 style="margin-top: 0;">Overview</h3>
+          <p id="subscriptions-total" class="muted"></p>
+        </section>
+
+        <section class="card" style="margin-top: 14px;">
+          <h3 style="margin-top: 0;">Add Subscription</h3>
+          <form id="subscription-form" class="row">
+            <input class="input" name="service_name" placeholder="Service name" required />
+            <input class="input" type="number" name="amount" placeholder="Amount" required />
+            <select name="billing_cycle">
+              <option value="monthly">monthly</option>
+              <option value="annual">annual</option>
+            </select>
+            <input class="input" type="date" name="renewal_date" />
+            <button class="btn btn-primary" type="submit">Add</button>
+          </form>
+        </section>
+
+        <section class="grid" id="subscriptions-list" style="margin-top: 14px;"></section>
+      </main>
+    </div>
+
+    <script type="module" src="./static/app.js"></script>
+  </body>
+</html>
