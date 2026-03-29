@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Settings - SubScript</title>
+    <link rel="stylesheet" href="./static/styles.css" />
+  </head>
+  <body data-page="settings">
+    <div class="layout">
+      <aside class="sidebar">
+        <h2>SubScript</h2>
+        <nav id="sidebar-nav" class="nav"></nav>
+        <div class="card" style="margin-top: 14px;">
+          <p id="user-name" style="margin: 0; font-weight: 700;"></p>
+          <p id="user-email" class="muted" style="margin: 6px 0 0;"></p>
+          <button id="logout-btn" class="btn btn-ghost" style="margin-top: 10px; width: 100%;">Logout</button>
+        </div>
+      </aside>
+
+      <main class="main">
+        <div class="topbar">
+          <h1 id="top-title" style="margin: 0; font-size: 1.6rem;"></h1>
+        </div>
+
+        <section class="card">
+          <h3 style="margin-top: 0;">Profile</h3>
+          <p style="margin-bottom: 0;"><strong id="profile-name"></strong></p>
+          <p class="muted" id="profile-email" style="margin-top: 4px;"></p>
+        </section>
+
+        <section class="card" style="margin-top: 14px;">
+          <h3 style="margin-top: 0;">Budget and Notifications</h3>
+          <form id="settings-form" class="grid">
+            <label for="allowance" class="muted">Monthly allowance</label>
+            <input class="input" id="allowance" type="number" name="allowance" />
+
+            <label for="month_start_date" class="muted">Month start day</label>
+            <input class="input" id="month_start_date" type="number" min="1" max="31" name="month_start_date" />
+
+            <label class="row"><input id="pref-renew" type="checkbox" /> Alert me before renewals</label>
+            <label class="row"><input id="pref-trial" type="checkbox" /> Alert me before trial end</label>
+            <label class="row"><input id="pref-burn" type="checkbox" /> Alert me for burn risk</label>
+
+            <div class="row">
+              <button type="submit" class="btn btn-primary">Save Settings</button>
+              <span id="settings-message" class="muted"></span>
+            </div>
+          </form>
+        </section>
+      </main>
+    </div>
+
+    <script type="module" src="./static/app.js"></script>
+  </body>
+</html>
