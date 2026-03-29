@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard - SubScript</title>
+    <link rel="stylesheet" href="./static/styles.css" />
+  </head>
+  <body data-page="dashboard">
+    <div class="layout">
+      <aside class="sidebar">
+        <h2>SubScript</h2>
+        <nav id="sidebar-nav" class="nav"></nav>
+        <div class="card" style="margin-top: 14px;">
+          <p id="user-name" style="margin: 0; font-weight: 700;"></p>
+          <p id="user-email" class="muted" style="margin: 6px 0 0;"></p>
+          <button id="logout-btn" class="btn btn-ghost" style="margin-top: 10px; width: 100%;">Logout</button>
+        </div>
+      </aside>
+
+      <main class="main">
+        <div class="topbar">
+          <h1 id="top-title" style="margin: 0; font-size: 1.6rem;"></h1>
+        </div>
+
+        <section class="grid grid-3">
+          <article class="card kpi-yellow">
+            <p>Monthly Allowance</p>
+            <div id="allowance-value" class="value"></div>
+          </article>
+          <article class="card kpi-purple">
+            <p>Detected Subscriptions</p>
+            <div id="subscription-value" class="value"></div>
+          </article>
+          <article class="card kpi-green">
+            <p>Safe Daily Spend</p>
+            <div id="daily-value" class="value"></div>
+          </article>
+        </section>
+
+        <section class="grid grid-2" style="margin-top: 16px;">
+          <article class="card">
+            <h3 style="margin-top: 0;">Pending Trials</h3>
+            <div id="dashboard-trials" class="grid"></div>
+          </article>
+          <article class="card">
+            <h3 style="margin-top: 0;">Upcoming Charges</h3>
+            <div id="dashboard-charges" class="grid"></div>
+          </article>
+        </section>
+
+        <section class="card" style="margin-top: 16px;">
+          <h3 style="margin-top: 0;">Recent Expenses</h3>
+          <div id="dashboard-expenses" class="grid"></div>
+        </section>
+      </main>
+    </div>
+
+    <script type="module" src="./static/app.js"></script>
+  </body>
+</html>

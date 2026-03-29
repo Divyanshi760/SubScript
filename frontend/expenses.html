@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Expenses - SubScript</title>
+    <link rel="stylesheet" href="./static/styles.css" />
+  </head>
+  <body data-page="expenses">
+    <div class="layout">
+      <aside class="sidebar">
+        <h2>SubScript</h2>
+        <nav id="sidebar-nav" class="nav"></nav>
+        <div class="card" style="margin-top: 14px;">
+          <p id="user-name" style="margin: 0; font-weight: 700;"></p>
+          <p id="user-email" class="muted" style="margin: 6px 0 0;"></p>
+          <button id="logout-btn" class="btn btn-ghost" style="margin-top: 10px; width: 100%;">Logout</button>
+        </div>
+      </aside>
+
+      <main class="main">
+        <div class="topbar">
+          <h1 id="top-title" style="margin: 0; font-size: 1.6rem;"></h1>
+        </div>
+
+        <section class="card">
+          <h3 style="margin-top: 0;">Add Expense</h3>
+          <form id="expense-form" class="row">
+            <input class="input" type="number" name="amount" placeholder="Amount" required />
+            <select name="category">
+              <option value="Food">Food</option>
+              <option value="Transport">Transport</option>
+              <option value="Fun">Fun</option>
+              <option value="Other">Other</option>
+            </select>
+            <input class="input" name="description" placeholder="Description" />
+            <input class="input" type="date" name="spent_at" />
+            <button type="submit" class="btn btn-primary">Add</button>
+          </form>
+          <p class="muted" style="margin-bottom: 0; margin-top: 12px;">Total spent: <strong id="expenses-total"></strong></p>
+        </section>
+
+        <section class="card" style="margin-top: 14px; overflow-x: auto;">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Category</th>
+                <th>Description</th>
+                <th>Amount</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="expenses-table-body"></tbody>
+          </table>
+        </section>
+      </main>
+    </div>
+
+    <script type="module" src="./static/app.js"></script>
+  </body>
+</html>
