@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Onboarding - SubScript</title>
+    <link rel="stylesheet" href="./static/styles.css" />
+  </head>
+  <body data-page="onboarding">
+    <div class="page" style="max-width: 620px; padding-top: 48px;">
+      <section class="hero">
+        <h1>Set up your budget</h1>
+        <p class="muted">Tell us your monthly allowance and reset date.</p>
+
+        <form id="onboarding-form" class="grid" style="margin-top: 14px;">
+          <label class="muted" for="monthly_allowance">Monthly allowance</label>
+          <input class="input" type="number" id="monthly_allowance" name="monthly_allowance" placeholder="6000" required />
+
+          <label class="muted" for="month_start_date">Allowance reset day (1-31)</label>
+          <input class="input" type="number" id="month_start_date" name="month_start_date" min="1" max="31" value="1" required />
+
+          <div class="row" style="margin-top: 8px;">
+            <button type="submit" class="btn btn-primary">Save and Continue</button>
+            <a href="./login.html" class="btn btn-ghost">Back</a>
+          </div>
+        </form>
+      </section>
+    </div>
+
+    <script type="module" src="./static/app.js"></script>
+  </body>
+</html>
