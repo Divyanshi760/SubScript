@@ -7,14 +7,60 @@
     <link rel="stylesheet" href="./static/styles.css" />
   </head>
   <body data-page="login">
-    <div class="page" style="max-width: 580px; padding-top: 64px;">
-      <section class="hero">
+    <div class="page auth-page">
+      <section class="hero auth-hero">
         <p class="badge">SubScript</p>
         <h1 style="margin-top: 10px;">Sign in</h1>
-        <p class="muted">Use demo mode to continue with local sample data.</p>
-        <div class="row" style="margin-top: 16px;">
-          <button id="demo-login-btn" class="btn btn-primary">Continue in Demo Mode</button>
-          <a href="./index.html" class="btn btn-ghost">Back to Home</a>
+        <p class="muted">Sign in to your student or parent account, or create both together in one step.</p>
+
+        <div class="auth-switcher" style="margin-top: 18px;">
+          <button type="button" class="btn btn-ghost active" data-auth-switch="login">Sign In</button>
+          <button type="button" class="btn btn-ghost" data-auth-switch="register">Register</button>
+        </div>
+
+        <div data-auth-panel="login" class="grid" style="margin-top: 18px;">
+          <div class="role-picker" id="role-picker">
+            <button type="button" class="role-card active" data-role="student">
+              <span class="badge">Student</span>
+              <strong>Track my own subscriptions and spending</strong>
+              <span class="muted">See trials, expenses, and your daily safe spend.</span>
+            </button>
+            <button type="button" class="role-card" data-role="parent">
+              <span class="badge">Parent</span>
+              <strong>Monitor my child's subscription habits</strong>
+              <span class="muted">Review allowance, upcoming charges, and spending patterns.</span>
+            </button>
+          </div>
+
+          <form id="login-form" class="grid auth-form">
+            <input class="input" type="email" name="email" placeholder="Email address" required />
+            <input class="input" type="password" name="password" placeholder="Password" required />
+            <div class="row" style="margin-top: 6px;">
+              <button id="login-submit-btn" type="submit" class="btn btn-primary">Sign In</button>
+              <a href="./index.html" class="btn btn-ghost">Back to Home</a>
+            </div>
+          </form>
+          <p id="login-message" class="muted"></p>
+        </div>
+
+        <div data-auth-panel="register" class="grid" style="display: none; margin-top: 18px;">
+          <form id="register-form" class="grid auth-form">
+            <div class="grid grid-2">
+              <input class="input" type="text" name="student_name" placeholder="Student name" required />
+              <input class="input" type="email" name="student_email" placeholder="Student email" required />
+            </div>
+            <input class="input" type="password" name="student_password" placeholder="Student password" required />
+            <div class="grid grid-2">
+              <input class="input" type="text" name="parent_name" placeholder="Parent name" required />
+              <input class="input" type="email" name="parent_email" placeholder="Parent email" required />
+            </div>
+            <input class="input" type="password" name="parent_password" placeholder="Parent password" required />
+            <div class="row" style="margin-top: 6px;">
+              <button id="register-submit-btn" type="submit" class="btn btn-primary">Create Both Accounts</button>
+              <a href="./index.html" class="btn btn-ghost">Back to Home</a>
+            </div>
+          </form>
+          <p id="register-message" class="muted"></p>
         </div>
       </section>
     </div>

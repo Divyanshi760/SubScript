@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Student Dashboard - SubScript</title>
+    <title>Parent Dashboard - SubScript</title>
     <link rel="stylesheet" href="./static/styles.css" />
   </head>
-  <body data-page="dashboard">
+  <body data-page="parent-dashboard">
     <div class="layout">
       <aside class="sidebar">
         <h2>SubScript</h2>
@@ -25,33 +25,39 @@
 
         <section class="grid grid-3">
           <article class="card kpi-yellow">
-            <p>Monthly Allowance</p>
+            <p>Student Allowance</p>
             <div id="allowance-value" class="value"></div>
           </article>
           <article class="card kpi-purple">
-            <p>Detected Subscriptions</p>
+            <p>Recurring Commitments</p>
             <div id="subscription-value" class="value"></div>
           </article>
           <article class="card kpi-green">
-            <p>Safe Daily Spend</p>
-            <div id="daily-value" class="value"></div>
+            <p>Budget Remaining</p>
+            <div id="remaining-value" class="value"></div>
           </article>
         </section>
 
         <section class="grid grid-2" style="margin-top: 16px;">
           <article class="card">
-            <h3 style="margin-top: 0;">Pending Trials</h3>
-            <div id="dashboard-trials" class="grid"></div>
+            <h3 style="margin-top: 0;">Student Snapshot</h3>
+            <div id="parent-summary" class="grid"></div>
           </article>
           <article class="card">
-            <h3 style="margin-top: 0;">Upcoming Charges</h3>
+            <h3 style="margin-top: 0;">Upcoming Charges To Review</h3>
             <div id="dashboard-charges" class="grid"></div>
           </article>
         </section>
 
-        <section class="card" style="margin-top: 16px;">
-          <h3 style="margin-top: 0;">Recent Expenses</h3>
-          <div id="dashboard-expenses" class="grid"></div>
+        <section class="grid grid-2" style="margin-top: 16px;">
+          <article class="card">
+            <h3 style="margin-top: 0;">Trial Approvals</h3>
+            <div id="dashboard-trials" class="grid"></div>
+          </article>
+          <article class="card">
+            <h3 style="margin-top: 0;">Recent Student Expenses</h3>
+            <div id="dashboard-expenses" class="grid"></div>
+          </article>
         </section>
       </main>
     </div>
