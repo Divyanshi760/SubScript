@@ -2,11 +2,11 @@
 $host = "localhost";
 $user = "root";
 $password = "";
-$database = "SubScript";
+$db = "SubScript";
 
-$conn = new mysqli($host, $user, $password, $database);
+$conn = new mysqli($host, $user, $password, $db);
 
 if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+    die("DB failed");
 }
 ?>
