@@ -24,13 +24,13 @@
         </div>
 
         <section class="card">
-          <h3 style="margin-top: 0;">Profile</h3>
+          <h3 id="settings-profile-title" style="margin-top: 0;">Profile</h3>
           <p style="margin-bottom: 0;"><strong id="profile-name"></strong></p>
           <p class="muted" id="profile-email" style="margin-top: 4px;"></p>
         </section>
 
-        <section class="card" style="margin-top: 14px;">
-          <h3 style="margin-top: 0;">Budget and Notifications</h3>
+        <section id="settings-form-section" class="card" style="margin-top: 14px;">
+          <h3 id="settings-form-title" style="margin-top: 0;">Budget and Notifications</h3>
           <form id="settings-form" class="grid">
             <label for="allowance" class="muted">Monthly allowance</label>
             <input class="input" id="allowance" type="number" name="allowance" />
@@ -47,6 +47,7 @@
               <span id="settings-message" class="muted"></span>
             </div>
           </form>
+          <p id="settings-readonly-note" class="muted" style="display: none; margin-top: 12px;">Parents can review the student's budget preferences here, but only the student can edit them.</p>
         </section>
       </main>
     </div>

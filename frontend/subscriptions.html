@@ -24,12 +24,12 @@
         </div>
 
         <section class="card">
-          <h3 style="margin-top: 0;">Overview</h3>
+          <h3 id="subscriptions-overview-title" style="margin-top: 0;">Overview</h3>
           <p id="subscriptions-total" class="muted"></p>
         </section>
 
-        <section class="card" style="margin-top: 14px;">
-          <h3 style="margin-top: 0;">Add Subscription</h3>
+        <section id="subscription-form-section" class="card" style="margin-top: 14px;">
+          <h3 id="subscriptions-form-title" style="margin-top: 0;">Add Subscription</h3>
           <form id="subscription-form" class="row">
             <input class="input" name="service_name" placeholder="Service name" required />
             <input class="input" type="number" name="amount" placeholder="Amount" required />
@@ -40,6 +40,7 @@
             <input class="input" type="date" name="renewal_date" />
             <button class="btn btn-primary" type="submit">Add</button>
           </form>
+          <p id="subscriptions-readonly-note" class="muted" style="display: none; margin-top: 12px;">Parents can review the student's subscriptions here, but only the student can make changes.</p>
         </section>
 
         <section class="grid" id="subscriptions-list" style="margin-top: 14px;"></section>
