@@ -1,0 +1,7 @@
+# Ensure PHP processes .php files
+<IfModule mod_php.c>
+    AddHandler application/x-httpd-php .php
+</IfModule>
+
+# Prevent directory listing
+Options -Indexes -MultiViews
