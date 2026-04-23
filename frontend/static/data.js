@@ -1,9 +1,16 @@
+const API_BASE = 'http://localhost/SubScript/backend/'
+const AUTH_KEY = 'subscript_auth'
+const ROLE_KEY = 'subscript_role'
+
 const DEFAULT_USER = {
-  id: 'u_1',
-  name: 'Divyanshi',
-  email: 'divyanshi@student.edu',
-  monthly_allowance: 6000,
+  id: '',
+  role: 'student',
+  name: '',
+  email: '',
+  monthly_allowance: 0,
   month_start_date: 1,
+  student_name: '',
+  parent_name: '',
   preferences: {
     renewAlert1d: true,
     trialAlert1d: true,
@@ -11,143 +18,224 @@ const DEFAULT_USER = {
   },
 }
 
-const DEFAULT_SUBSCRIPTIONS = [
-  { id: 's1', service_name: 'Spotify Family', amount: 299, billing_cycle: 'monthly', renewal_date: '2026-03-21' },
-  { id: 's2', service_name: 'Netflix Basic', amount: 199, billing_cycle: 'monthly', renewal_date: '2026-03-23' },
-  { id: 's3', service_name: 'Notion Plus', amount: 800, billing_cycle: 'monthly', renewal_date: '2026-03-30' },
-  { id: 's4', service_name: 'Canva Pro', amount: 499, billing_cycle: 'monthly', renewal_date: '2026-03-24' },
-]
-
-const DEFAULT_TRIALS = [
-  { id: 't1', service_name: 'Canva Pro Free Trial', trial_end_date: '2026-03-21', expected_price: 499, status: 'pending' },
-  { id: 't2', service_name: 'Adobe CC Student', trial_end_date: '2026-03-25', expected_price: 1675, status: 'pending' },
-  { id: 't3', service_name: 'Notion AI', trial_end_date: '2026-03-18', expected_price: 399, status: 'cancelled' },
-]
-
-const DEFAULT_EXPENSES = [
-  { id: 'e1', amount: 340, category: 'Food', description: 'Zomato order', spent_at: '2026-03-18' },
-  { id: 'e2', amount: 120, category: 'Transport', description: 'Metro card recharge', spent_at: '2026-03-17' },
-  { id: 'e3', amount: 215, category: 'Food', description: 'Swiggy dinner', spent_at: '2026-03-16' },
-  { id: 'e4', amount: 480, category: 'Fun', description: 'Movie night', spent_at: '2026-03-14' },
-  { id: 'e5', amount: 150, category: 'Other', description: 'Printouts', spent_at: '2026-03-13' },
-  { id: 'e6', amount: 90, category: 'Transport', description: 'Cab split', spent_at: '2026-03-12' },
-]
-
-const KEYS = {
-  subscriptions: 'subscript_mock_subscriptions',
-  expenses: 'subscript_mock_expenses',
-  trials: 'subscript_mock_trials',
-  user: 'subscript_mock_user',
-  auth: 'subscript_mock_auth',
+const cache = {
+  user: { ...DEFAULT_USER },
+  subscriptions: [],
+  expenses: [],
+  trials: [],
+  role: localStorage.getItem(ROLE_KEY) || 'student',
 }
 
-function safeParse(raw, fallback) {
-  if (!raw) return fallback
+function normalizeRole(role) {
+  return role === 'parent' ? 'parent' : 'student'
+}
+
+function mergeState(payload = {}) {
+  // payload is the inner `data` object: { user, subscriptions, expenses, trials }
+  if (!payload || !payload.user) return cache
+
+  cache.user = { ...DEFAULT_USER, ...payload.user }
+  cache.subscriptions = Array.isArray(payload.subscriptions) ? payload.subscriptions : []
+  cache.expenses = Array.isArray(payload.expenses) ? payload.expenses : []
+  cache.trials = Array.isArray(payload.trials) ? payload.trials : []
+  cache.role = normalizeRole(cache.user.role || cache.role)
+
+  localStorage.setItem(ROLE_KEY, cache.role)
+  return cache
+}
+
+async function request(path, options = {}) {
   try {
-    const parsed = JSON.parse(raw)
-    return parsed ?? fallback
-  } catch {
-    return fallback
+    const init = {
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(options.headers || {}),
+      },
+      ...options,
+    }
+
+    // If no body, remove Content-Type header to avoid preflight in some cases
+    if (!init.body) delete init.headers['Content-Type']
+
+    const response = await fetch(new URL(path, API_BASE).href, init)
+
+    const text = await response.text()
+
+    let data = {}
+    try {
+      data = text ? JSON.parse(text) : {}
+    } catch {
+      console.error('INVALID JSON:', text)
+      return { ok: false, data: {}, error: `Invalid server response from ${path}` }
+    }
+
+    if (!response.ok) {
+      console.error('HTTP ERROR:', response.status, data)
+      return { ok: false, data: data || {}, error: data.error || `HTTP ${response.status}` }
+    }
+
+    // data is the parsed JSON body, e.g. { ok: true, data: { user, subscriptions, ... } }
+    return { ok: true, data }
+  } catch (err) {
+    console.error('NETWORK ERROR:', err)
+    return { ok: false, data: {}, error: String(err) }
   }
 }
 
-function readArray(key, fallback) {
-  const parsed = safeParse(localStorage.getItem(key), fallback)
-  return Array.isArray(parsed) ? parsed : fallback
+export function setViewerRole(role) {
+  cache.role = normalizeRole(role)
+  localStorage.setItem(ROLE_KEY, cache.role)
 }
 
-function writeArray(key, value) {
-  const safeValue = Array.isArray(value) ? value : []
-  localStorage.setItem(key, JSON.stringify(safeValue))
+export function getViewerRole() {
+  return normalizeRole(localStorage.getItem(ROLE_KEY) || cache.role)
 }
 
-function uid(prefix) {
-  return `${prefix}_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`
+export async function loginAccount(payload) {
+  const response = await request('login.php', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  })
+
+  if (!response.ok) {
+    throw new Error(response.error || 'Sign in failed.')
+  }
+
+  // response.data = { ok: true, data: { user, subscriptions, ... } }
+  // we need the inner .data field
+  mergeState(response.data.data)
+  setAuth(true)
+  return cache
 }
 
-export function bootstrapStore() {
-  if (!localStorage.getItem(KEYS.user)) localStorage.setItem(KEYS.user, JSON.stringify(DEFAULT_USER))
-  if (!localStorage.getItem(KEYS.subscriptions)) writeArray(KEYS.subscriptions, DEFAULT_SUBSCRIPTIONS)
-  if (!localStorage.getItem(KEYS.expenses)) writeArray(KEYS.expenses, DEFAULT_EXPENSES)
-  if (!localStorage.getItem(KEYS.trials)) writeArray(KEYS.trials, DEFAULT_TRIALS)
+export async function registerAccount(payload) {
+  const response = await request('register.php', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  })
+
+  if (!response.ok) {
+    throw new Error(response.error || 'Registration failed.')
+  }
+
+  mergeState(response.data.data)
+  setAuth(true)
+  return cache
+}
+
+export async function bootstrapStore() {
+  const payload = await request('bootstrap.php')
+  if (!payload.ok || !payload.data || !payload.data.data) return cache
+  return mergeState(payload.data.data)
 }
 
 export function getUser() {
-  const parsed = safeParse(localStorage.getItem(KEYS.user), DEFAULT_USER)
-  return parsed && typeof parsed === 'object' ? parsed : DEFAULT_USER
+  return cache.user
 }
 
-export function setUser(next) {
-  const merged = { ...getUser(), ...(next || {}) }
-  localStorage.setItem(KEYS.user, JSON.stringify(merged))
-  return merged
+export async function setUser(next) {
+  const payload = await request('updateUser.php', {
+    method: 'POST',
+    body: JSON.stringify(next),
+  })
+
+  if (!payload.ok || !payload.data || !payload.data.data) return null
+
+  mergeState(payload.data.data)
+  return cache.user
 }
 
 export function getSubscriptions() {
-  return readArray(KEYS.subscriptions, DEFAULT_SUBSCRIPTIONS)
+  return cache.subscriptions
 }
 
-export function setSubscriptions(next) {
-  writeArray(KEYS.subscriptions, next)
-  return getSubscriptions()
+export async function addSubscription(payload) {
+  const response = await request('addSubscription.php', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  })
+
+  if (!response.ok || !response.data || !response.data.data) return null
+
+  mergeState(response.data.data)
+  return cache.subscriptions
 }
 
-export function addSubscription(payload) {
-  const next = [...getSubscriptions(), { id: uid('sub'), ...payload }]
-  return setSubscriptions(next)
-}
+export async function removeSubscription(id) {
+  const response = await request('deleteSubscription.php', {
+    method: 'POST',
+    body: JSON.stringify({ id }),
+  })
 
-export function removeSubscription(id) {
-  const next = getSubscriptions().filter((item) => item.id !== id)
-  return setSubscriptions(next)
+  if (!response.ok || !response.data || !response.data.data) return null
+
+  mergeState(response.data.data)
+  return cache.subscriptions
 }
 
 export function getTrials() {
-  return readArray(KEYS.trials, DEFAULT_TRIALS)
+  return cache.trials
 }
 
-export function setTrials(next) {
-  writeArray(KEYS.trials, next)
-  return getTrials()
-}
-
-export function resolveTrial(id, action) {
-  const trials = getTrials().map((trial) => {
-    if (trial.id !== id) return trial
-    return { ...trial, status: action === 'keep' ? 'kept' : 'cancelled' }
+export async function resolveTrial(id, action) {
+  const response = await request('resolveTrial.php', {
+    method: 'POST',
+    body: JSON.stringify({ id, action }),
   })
-  return setTrials(trials)
+
+  if (!response.ok || !response.data || !response.data.data) return null
+
+  mergeState(response.data.data)
+  return cache.trials
 }
 
 export function getExpenses() {
-  return readArray(KEYS.expenses, DEFAULT_EXPENSES)
+  return cache.expenses
 }
 
-export function setExpenses(next) {
-  writeArray(KEYS.expenses, next)
-  return getExpenses()
+export async function addExpense(payload) {
+  const response = await request('addExpense.php', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  })
+
+  if (!response.ok || !response.data || !response.data.data) return null
+
+  mergeState(response.data.data)
+  return cache.expenses
 }
 
-export function addExpense(payload) {
-  const next = [...getExpenses(), { id: uid('exp'), ...payload }]
-  return setExpenses(next)
-}
+export async function removeExpense(id) {
+  const response = await request('deleteExpense.php', {
+    method: 'POST',
+    body: JSON.stringify({ id }),
+  })
 
-export function removeExpense(id) {
-  const next = getExpenses().filter((item) => item.id !== id)
-  return setExpenses(next)
+  if (!response.ok || !response.data || !response.data.data) return null
+
+  mergeState(response.data.data)
+  return cache.expenses
 }
 
 export function setAuth(isLoggedIn) {
-  localStorage.setItem(KEYS.auth, JSON.stringify(Boolean(isLoggedIn)))
+  localStorage.setItem(AUTH_KEY, JSON.stringify(Boolean(isLoggedIn)))
 }
 
 export function isLoggedIn() {
-  return Boolean(safeParse(localStorage.getItem(KEYS.auth), false))
+  return Boolean(JSON.parse(localStorage.getItem(AUTH_KEY) || 'false'))
 }
 
-export function logout() {
-  setAuth(false)
+export async function logout() {
+  try {
+    await request('logout.php', { method: 'POST', body: JSON.stringify({}) })
+  } finally {
+    cache.user = { ...DEFAULT_USER }
+    cache.subscriptions = []
+    cache.expenses = []
+    cache.trials = []
+    setAuth(false)
+  }
 }
 
 export function computeBudgetSummary() {
