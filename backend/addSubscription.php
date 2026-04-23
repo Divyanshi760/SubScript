@@ -1,20 +1,29 @@
 <?php
-include 'db.php';
+include __DIR__ . '/helpers.php';
 
-$user_id = 1;
-$name = "Netflix";
-$cost = 499.00;
-$billing_cycle = "monthly";
-$next_billing_date = "2026-04-10";
+$input = read_json();
+$student = require_student_user();
+$studentId = (int) $student['id'];
+$serviceName = trim((string) ($input['service_name'] ?? ''));
+$amount = (float) ($input['amount'] ?? 0);
+$billingCycle = trim((string) ($input['billing_cycle'] ?? 'monthly'));
+$renewalDate = trim((string) ($input['renewal_date'] ?? date('Y-m-d')));
 
-$sql = "INSERT INTO subscriptions
-(user_id, name, cost, billing_cycle, next_billing_date)
-VALUES
-('$user_id', '$name', '$cost', '$billing_cycle', '$next_billing_date')";
-
-if ($conn->query($sql) === TRUE) {
-    echo "Subscription added";
-} else {
-    echo "Error: " . $conn->error;
+if ($serviceName === '' || $amount <= 0) {
+    respond(['ok' => false, 'error' => 'Subscription name and amount are required.'], 422);
 }
+
+$safeService = esc($serviceName);
+$safeCycle = esc($billingCycle ?: 'monthly');
+$safeRenewal = esc($renewalDate);
+
+$conn->query("
+    INSERT INTO subscriptions (user_id, service_name, amount, billing_cycle, renewal_date)
+    VALUES ($studentId, '$safeService', $amount, '$safeCycle', '$safeRenewal')
+");
+
+respond([
+    'ok' => true,
+    'data' => get_shared_data_for_user(find_user_by_id($studentId)),
+]);
 ?>
