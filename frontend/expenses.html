@@ -23,8 +23,8 @@
           <h1 id="top-title" style="margin: 0; font-size: 1.6rem;"></h1>
         </div>
 
-        <section class="card">
-          <h3 style="margin-top: 0;">Add Expense</h3>
+        <section id="expense-form-section" class="card">
+          <h3 id="expenses-form-title" style="margin-top: 0;">Add Expense</h3>
           <form id="expense-form" class="row">
             <input class="input" type="number" name="amount" placeholder="Amount" required />
             <select name="category">
@@ -37,6 +37,7 @@
             <input class="input" type="date" name="spent_at" />
             <button type="submit" class="btn btn-primary">Add</button>
           </form>
+          <p id="expenses-readonly-note" class="muted" style="display: none; margin-top: 12px;">Parents can monitor the student's expenses here, but only the student can add or remove entries.</p>
           <p class="muted" style="margin-bottom: 0; margin-top: 12px;">Total spent: <strong id="expenses-total"></strong></p>
         </section>
 
